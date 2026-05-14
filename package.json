@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.2",
+    "openai": "^6.37.0"
+  }
+}
