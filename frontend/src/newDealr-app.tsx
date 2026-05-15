@@ -450,7 +450,8 @@ function Sidebar({ role, active, onNav, onLogout }: { role: Role; active: Sectio
 }
 
 // ─── AUTH PAGE ────────────────────────────────────────────────────────────────
-function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
+
+function AuthPage({ onLogin }: { onLogin: (r: Role, email: string) => void }) {
   const [role, setRole] = useState<Role>("artisan");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
@@ -474,8 +475,30 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
   ];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Left panel */}
+    // Base Parent Container configuration
+    <div style={{ display: "flex", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+      
+      {/* Animated Africa SVG Background Layer (Framer Motion Enhanced) */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.92, rotate: -12 }}
+        animate={{ opacity: 0.08, scale: 1, rotate: -8 }}
+        transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+        style={{ 
+          position: "absolute", 
+          bottom: "-140px", 
+          left: "-120px", 
+          width: "420px", 
+          height: "420px", 
+          backgroundImage: "url('/workspaces/DEALR---Team-JAMA/frontend/public/Outlined%20Image%20with%20Negative%20Space.svg')", 
+          backgroundRepeat: "no-repeat", 
+          backgroundSize: "contain", 
+          zIndex: 0, 
+          pointerEvents: "none",
+          transformOrigin: "bottom left" // Anchors rotation cleanly to the corner pivot
+        }} 
+      />
+
+      {/* Left panel wrapper - zIndex: 2 */}
       <motion.div
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
@@ -489,6 +512,7 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
           padding: "64px 72px",
           position: "relative",
           overflow: "hidden",
+          zIndex: 2,
         }}
       >
         {/* Ambient circle */}
@@ -504,6 +528,8 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
             pointerEvents: "none",
           }}
         />
+        
+        {/* Logo Layer */}
         <div
           className="syne"
           style={{
@@ -517,7 +543,7 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
         >
           Deal<span style={{ color: T.gold }}>r.</span>
         </div>
-        
+
         {/* Subheadline with rotating text injection */}
         <div
           style={{
@@ -583,7 +609,7 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
         </div>
       </motion.div>
 
-      {/* Right panel */}
+      {/* Right panel / Login Card wrapper - zIndex: 2 */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -596,6 +622,8 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
           padding: 48,
           background: T.surf,
           borderLeft: `1px solid ${T.bdr}`,
+          position: "relative",
+          zIndex: 2,
         }}
       >
         <div style={{ width: "100%", maxWidth: 340 }}>
@@ -666,7 +694,7 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
             onChange={(e) => setPass(e.target.value)}
           />
           <BtnPrimary
-            onClick={() => onLogin(role)}
+            onClick={() => onLogin(role, email)}
             style={{ marginBottom: 16, marginTop: 4 }}
           >
             Continue{" "}
@@ -674,7 +702,7 @@ function AuthPage({ onLogin }: { onLogin: (r: Role) => void }) {
           <div style={{ textAlign: "center", fontSize: 13, color: T.t3 }}>
             No account?{" "}
             <span
-              onClick={() => onLogin(role)}
+              onClick={() => onLogin(role, email)}
               style={{ color: T.gold, fontWeight: 600, cursor: "pointer" }}
             >
               Sign up free
