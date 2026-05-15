@@ -14,7 +14,6 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 
-
 # ── Exception hierarchy ─────────────────────────────────────────────────
 
 
@@ -103,9 +102,7 @@ class ExternalServiceError(DealrError):
 # ── FastAPI exception handlers ──────────────────────────────────────────
 
 
-def _build_error_response(
-    request: Request, exc: DealrError
-) -> ORJSONResponse:
+def _build_error_response(request: Request, exc: DealrError) -> ORJSONResponse:
     return ORJSONResponse(
         status_code=exc.status_code,
         content={
@@ -123,7 +120,5 @@ def register_exception_handlers(app: FastAPI) -> None:
     """Attach DEALR error handlers to the FastAPI app."""
 
     @app.exception_handler(DealrError)
-    async def _dealr_error_handler(
-        request: Request, exc: DealrError
-    ) -> ORJSONResponse:
+    async def _dealr_error_handler(request: Request, exc: DealrError) -> ORJSONResponse:
         return _build_error_response(request, exc)
