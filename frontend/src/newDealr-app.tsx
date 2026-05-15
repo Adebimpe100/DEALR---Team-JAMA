@@ -775,10 +775,19 @@ function OnboardingPage({ role, onComplete }: { role: Role; onComplete: () => vo
 // ─── DASHBOARD ───────────────────────────────────────────────────────────────
 function DashboardSection({ role, onNav }: { role: Role; onNav: (s: Section) => void }) {
   const isArtisan = role === "artisan";
+  
+  
+  const [userName, setUserName] = useState(isArtisan ? "Kehinde" : "Bola");
+
+  
+  useEffect(() => {
+    setUserName(isArtisan ? "Kehinde" : "Bola");
+  }, [role, isArtisan]);
+
   const recentJobs: JobItem[] = [
     { desc: "Senator kaftan with hand embroidery", meta: isArtisan ? "Bola A. · Due tomorrow" : "Kehinde Adeyemi · Due tomorrow", amt: "₦21,000", st: "escrow" },
-    { desc: "Birthday decoration — 200 guests",    meta: isArtisan ? "Tunde M. · Due Friday" : "Zainab Events · Due Friday",     amt: "₦55,000", st: "pending" },
-    { desc: "Compound gate welding — 3.5m",        meta: isArtisan ? "Ngozi O. · Completed" : "Seun Builders · Completed",       amt: "₦38,000", st: "done" },
+    { desc: "Birthday decoration — 200 guests", meta: isArtisan ? "Tunde M. · Due Friday" : "Zainab Events · Due Friday", amt: "₦55,000", st: "pending" },
+    { desc: "Compound gate welding — 3.5m", meta: isArtisan ? "Ngozi O. · Completed" : "Seun Builders · Completed", amt: "₦38,000", st: "done" },
   ];
 
   return (
@@ -786,7 +795,7 @@ function DashboardSection({ role, onNav }: { role: Role; onNav: (s: Section) => 
       {/* Header */}
       <motion.div variants={itemFade} style={{ marginBottom: 32 }}>
         <div className="syne" style={{ fontSize: 28, fontWeight: 700, color: T.t1, letterSpacing: "-0.02em", marginBottom: 4 }}>
-          {isArtisan ? "Good morning, Kehinde 👋" : "Good morning, Bola 👋"}
+          {`Good morning, ${userName} 👋`}
         </div>
         <div style={{ fontSize: 14, color: T.t2 }}>
           {isArtisan ? "You have 2 active jobs and 1 new bid opportunity." : "You have 2 active jobs in escrow."}
@@ -799,13 +808,13 @@ function DashboardSection({ role, onNav }: { role: Role; onNav: (s: Section) => 
           <>
             <StatCard label="Available" value="₦84,500" sub="↑ ₦21k this week" accent="gold" />
             <StatCard label="In Escrow" value="₦38,000" sub="2 active jobs" accent="green" />
-            <StatCard label="Win Rate"  value="67%"     sub="↑ 12% this month" accent="green" />
+            <StatCard label="Win Rate" value="67%" sub="↑ 12% this month" accent="green" />
           </>
         ) : (
           <>
             <StatCard label="Total Spent" value="₦80,000" sub="4 jobs done" accent="gold" />
-            <StatCard label="In Escrow"   value="₦38,000" sub="2 active jobs" accent="green" />
-            <StatCard label="Disputes"    value="0"        sub="Clean record" accent="green" />
+            <StatCard label="In Escrow" value="₦38,000" sub="2 active jobs" accent="green" />
+            <StatCard label="Disputes" value="0" sub="Clean record" accent="green" />
           </>
         )}
       </motion.div>
@@ -1131,87 +1140,157 @@ function JobsSection({ role, showToast }: { role: Role; showToast: ToastFn }) {
   );
 
   return (
-    <motion.div variants={stagger} initial="initial" animate="animate">
-      <motion.div variants={itemFade} style={{ marginBottom: 24 }}>
-        <div className="syne" style={{ fontSize: 26, fontWeight: 700, color: T.t1, letterSpacing: "-0.02em", marginBottom: 4 }}>My Jobs</div>
-        <div style={{ fontSize: 14, color: T.t2 }}>{isArtisan ? "Manage active and past jobs." : "Track jobs, confirm delivery, release payments."}</div>
-      </motion.div>
-
-      {isArtisan && (
-        <motion.div variants={itemFade}>
-          <Card style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T.t1, marginBottom: 14 }}>Create New Job</div>
-            <textarea
-              value={jobDesc} onChange={(e) => setJobDesc(e.target.value)}
-              placeholder="Describe the job in plain English or Pidgin..."
-              style={{
-                width: "100%", minHeight: 100, padding: 14,
-                border: `1px solid ${T.bdr2}`, borderRadius: 8,
-                fontSize: 14, fontFamily: "inherit", color: T.t1,
-                background: T.surf2, resize: "vertical", outline: "none", lineHeight: 1.6, marginBottom: 12,
-              }}
-            />
-            {generating && (
-              <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden", marginBottom: 12 }}>
-                <motion.div
-                  animate={{ x: ["-100%", "200%"] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ height: "100%", width: "50%", background: `linear-gradient(90deg, transparent, ${T.gold}, transparent)`, borderRadius: 2 }}
-                />
-              </div>
-            )}
-            <BtnPrimary onClick={genPrice} disabled={generating} loading={generating}>
-              {generating ? "Generating..." : "Generate Price with AI"}
-            </BtnPrimary>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Filter tabs */}
-      <motion.div variants={itemFade} style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
-        {[["all", "All"], ["escrow", "In Escrow"], ["pending", "Pending"], ["done", "Completed"]].map(([v, l]) => (
-          <motion.button key={v} onClick={() => setFilter(v)} whileTap={{ scale: 0.97 }}
-            style={{
-              padding: "7px 16px", borderRadius: 8, fontSize: 13,
-              border: `1px solid ${filter === v ? T.gold + "60" : T.bdr}`,
-              background: filter === v ? T.goldl : "transparent",
-              color: filter === v ? T.gold : T.t2,
-              cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
-            }}>{l}</motion.button>
-        ))}
-      </motion.div>
-
-      <motion.div variants={stagger} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <AnimatePresence mode="popLayout">
-          {filtered.map((j, i) => {
-            if (!isArtisan && j.st !== "done") {
-              return (
-                <motion.div key={i} variants={itemFade} layout
-                  style={{ background: T.surf, border: `1px solid ${T.bdr}`, borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: T.t1, marginBottom: 3 }}>{j.desc}</div>
-                    <div style={{ fontSize: 12, color: T.t3 }}>{j.meta}</div>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span className="mono" style={{ fontSize: 15, fontWeight: 600, color: T.t1 }}>{j.amt}</span>
-                    <motion.button whileTap={{ scale: 0.96 }} onClick={() => showToast(`Delivery confirmed. ${j.amt} released to artisan.`)}
-                      style={{ padding: "7px 14px", borderRadius: 8, background: T.greenl, color: T.green, border: `1px solid ${T.green}30`, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                      ✓ Confirm Delivery
-                    </motion.button>
-                    <motion.button whileTap={{ scale: 0.96 }}
-                      style={{ padding: "7px 14px", borderRadius: 8, background: "transparent", color: T.red, border: `1px solid ${T.red}30`, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                      Dispute
-                    </motion.button>
-                  </div>
-                </motion.div>
-              );
-            }
-            return <motion.div key={i} variants={itemFade} layout><JobRow {...j} /></motion.div>;
-          })}
-        </AnimatePresence>
-      </motion.div>
+  <motion.div variants={stagger} initial="initial" animate="animate">
+    {/* Header */}
+    <motion.div variants={itemFade} style={{ marginBottom: 24 }}>
+      <div className="syne" style={{ fontSize: 26, fontWeight: 700, color: T.t1, letterSpacing: "-0.02em", marginBottom: 4 }}>
+        My Jobs
+      </div>
+      <div style={{ fontSize: 14, color: T.t2 }}>
+        {isArtisan ? "Manage active and past jobs." : "Track jobs, confirm delivery, release payments."}
+      </div>
     </motion.div>
-  );
+
+    {/* Create Job Card - Swapped from 'isArtisan' to '!isArtisan' */}
+    {!isArtisan && (
+      <motion.div variants={itemFade}>
+        <Card style={{ marginBottom: 24 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: T.t1, marginBottom: 14 }}>
+            Create New Job
+          </div>
+          <textarea 
+            value={jobDesc} 
+            onChange={(e) => setJobDesc(e.target.value)} 
+            placeholder="Describe the job..." 
+            style={{ 
+              width: "100%", 
+              minHeight: 100, 
+              padding: 14, 
+              border: `1px solid ${T.bdr2}`, 
+              borderRadius: 8, 
+              fontSize: 14, 
+              fontFamily: "inherit", 
+              color: T.t1, 
+              background: T.surf2, 
+              resize: "vertical", 
+              outline: "none", 
+              lineHeight: 1.6, 
+              marginBottom: 12, 
+            }} 
+          />
+          {generating && (
+            <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden", marginBottom: 12 }}>
+              <motion.div 
+                animate={{ x: ["-100%", "200%"] }} 
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }} 
+                style={{ height: "100%", width: "50%", background: `linear-gradient(90deg, transparent, ${T.gold}, transparent)`, borderRadius: 2 }} 
+              />
+            </div>
+          )} 
+          <BtnPrimary onClick={genPrice} disabled={generating}>
+            {generating ? "Generating..." : "Generate Price with AI"}
+          </BtnPrimary>
+        </Card>
+      </motion.div>
+    )}
+
+    {/* Filter tabs */}
+    <motion.div variants={itemFade} style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+      {[["all", "All"], ["escrow", "In Escrow"], ["pending", "Pending"], ["done", "Completed"]].map(([v, l]) => (
+        <motion.button 
+          key={v} 
+          onClick={() => setFilter(v)} 
+          whileTap={{ scale: 0.97 }} 
+          style={{ 
+            padding: "7px 16px", 
+            borderRadius: 8, 
+            fontSize: 13, 
+            border: `1px solid ${filter === v ? T.gold + "60" : T.bdr}`, 
+            background: filter === v ? T.goldl : "transparent", 
+            color: filter === v ? T.gold : T.t2, 
+            cursor: "pointer", 
+            fontFamily: "inherit", 
+            transition: "all 0.15s", 
+          }}
+        >
+          {l}
+        </motion.button>
+      ))}
+    </motion.div>
+
+    {/* Jobs List Section */}
+    <motion.div variants={stagger} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <AnimatePresence mode="popLayout">
+        {filtered.map((j, i) => {
+          if (!isArtisan && j.st !== "done") {
+            return (
+              <motion.div 
+                key={i} 
+                variants={itemFade} 
+                layout 
+                style={{ 
+                  background: T.surf, 
+                  border: `1px solid ${T.bdr}`, 
+                  borderRadius: 12, 
+                  padding: "16px 20px", 
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "space-between" 
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: T.t1, marginBottom: 3 }}>{j.desc}</div>
+                  <div style={{ fontSize: 12, color: T.t3 }}>{j.meta}</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span className="mono" style={{ fontSize: 15, fontWeight: 600, color: T.t1 }}>{j.amt}</span>
+                  <motion.button 
+                    whileTap={{ scale: 0.96 }} 
+                    onClick={() => showToast(`Delivery confirmed. ${j.amt} released to artisan.`)} 
+                    style={{ 
+                      padding: "7px 14px", 
+                      borderRadius: 8, 
+                      background: T.greenl, 
+                      color: T.green, 
+                      border: `1px solid ${T.green}30`, 
+                      fontSize: 12, 
+                      fontWeight: 600, 
+                      cursor: "pointer", 
+                      fontFamily: "inherit" 
+                    }}
+                  >
+                    ✓ Confirm Delivery
+                  </motion.button>
+                  <motion.button 
+                    whileTap={{ scale: 0.96 }} 
+                    style={{ 
+                      padding: "7px 14px", 
+                      borderRadius: 8, 
+                      background: "transparent", 
+                      color: T.red, 
+                      border: `1px solid ${T.red}30`, 
+                      fontSize: 12, 
+                      fontWeight: 600, 
+                      cursor: "pointer", 
+                      fontFamily: "inherit" 
+                    }}
+                  >
+                    Dispute
+                  </motion.button>
+                </div>
+              </motion.div>
+            );
+          }
+          return (
+            <motion.div key={i} variants={itemFade} layout>
+              <JobRow {...j} />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </motion.div>
+  </motion.div>
+);
 }
 
 // ─── BIDDING ─────────────────────────────────────────────────────────────────
