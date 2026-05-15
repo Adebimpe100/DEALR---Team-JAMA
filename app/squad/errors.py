@@ -10,6 +10,7 @@ from app.core.errors import ExternalServiceError
 class SquadError(ExternalServiceError):
     """Base exception for Squad API failures."""
 
+    status_code: int | None = None
     squad_message: str = "Squad API error"
     transaction_ref: str | None = None
 
@@ -19,8 +20,10 @@ class SquadError(ExternalServiceError):
         *,
         squad_message: str | None = None,
         transaction_ref: str | None = None,
+        status_code: int | None = None,
         details: dict[str, Any] | None = None,
     ) -> None:
+        self.status_code = status_code
         self.squad_message = squad_message or self.squad_message
         self.transaction_ref = transaction_ref
         super().__init__(message, details=details)
@@ -41,42 +44,49 @@ class SquadError(ExternalServiceError):
                 message,
                 squad_message=squad_message or "Bad request to Squad API",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         if status_code in (401, 403):
             return SquadAuthError(
                 message,
                 squad_message=squad_message or "Squad authentication failed",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         if status_code == 404:
             return SquadNotFoundError(
                 message,
                 squad_message=squad_message or "Squad resource not found",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         if status_code == 412:
             return SquadReversedError(
                 message,
                 squad_message=squad_message or "Squad transfer reversed",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         if status_code == 422:
             return SquadUnprocessableError(
                 message,
                 squad_message=squad_message or "Squad request unprocessable",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         if status_code == 424:
             return SquadRequeryableError(
                 message,
                 squad_message=squad_message or "Squad request needs requery",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         if 500 <= status_code < 600:
             return SquadTransientError(
                 message,
                 squad_message=squad_message or "Squad transient error",
                 transaction_ref=transaction_ref,
+                status_code=status_code,
             )
         return SquadError(
             message,
