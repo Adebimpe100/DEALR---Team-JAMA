@@ -5,7 +5,7 @@
  *   npm install framer-motion
  *   (Tailwind not required — all styles are inline/CSS vars)
  *
- * BACKEND INTEGRATION NOTES are at the bottom of this file as comments.
+ * BACKEND INTEGRATION NOTES are at the bottom of this file as comments-Allison.
  */
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
@@ -556,7 +556,7 @@ function AuthPage({ onLogin }: { onLogin: (r: Role, email: string) => void }) {
         >
           Deals done right, Every time.
           <br />
-          For every <span style={{ color: T.gold, textTransform: "lowercase" }}>{rotatingWords[wordIndex]}</span> in Nigeria.
+          For every <span style={{ color: T.gold, textTransform: "lowercase" }}>{rotatingWords[wordIndex]}</span>.
         </div>
 
         <motion.div
