@@ -96,8 +96,7 @@ class Settings(BaseSettings):
     def _validate_database_url(cls, v: str) -> str:
         if not v.startswith("postgresql+asyncpg://"):
             raise ValueError(
-                "DATABASE_URL must start with 'postgresql+asyncpg://'. "
-                "Got prefix: " + v[:30]
+                 "DATABASE_URL must start with 'postgresql+asyncpg://'. Got prefix: " + v[:30]
             )
         return v
 
@@ -120,9 +119,7 @@ class Settings(BaseSettings):
         if self.TEST_DATABASE_URL and not self.TEST_DATABASE_URL.startswith(
             "postgresql+asyncpg://"
         ):
-            raise ValueError(
-                "TEST_DATABASE_URL must start with 'postgresql+asyncpg://' when set"
-            )
+            raise ValueError("TEST_DATABASE_URL must start with 'postgresql+asyncpg://' when set")
         return self
 
     @property
