@@ -8,6 +8,7 @@ from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
+import app.db.models as _models  # noqa: F401
 from alembic import context
 from app.core.config import get_settings
 from app.db.base import Base
@@ -17,10 +18,6 @@ config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# Import all models so autogenerate can detect them.
-# As models are added in app/db/models/, import them here.
-import app.db.models as _models  # noqa: F401
 
 target_metadata = Base.metadata
 
