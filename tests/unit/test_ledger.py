@@ -13,20 +13,19 @@ from app.services.ledger import (
     post_released,
 )
 
-
 # ── Banker's rounding ───────────────────────────────────────────────────
 
 
 def test_bankers_round_half_even() -> None:
     """0.5→0, 1.5→2, 2.5→2 per ROUND_HALF_EVEN."""
-    assert bankers_round(1, Decimal("0.5")) == 0   # 0.5 → 0
-    assert bankers_round(3, Decimal("0.5")) == 2   # 1.5 → 2
-    assert bankers_round(5, Decimal("0.5")) == 2   # 2.5 → 2
-    assert bankers_round(7, Decimal("0.5")) == 4   # 3.5 → 4
+    assert bankers_round(1, Decimal("0.5")) == 0  # 0.5 → 0
+    assert bankers_round(3, Decimal("0.5")) == 2  # 1.5 → 2
+    assert bankers_round(5, Decimal("0.5")) == 2  # 2.5 → 2
+    assert bankers_round(7, Decimal("0.5")) == 4  # 3.5 → 4
 
 
 def test_bankers_round_exact_fee_68500_at_200bps() -> None:
-    """₦68,500 at 200bps = ₦1,370 exact (685000 × 200 / 10000 = 13700 kobo)."""
+    """N68,500 at 200bps = N1,370 exact (685000 x 200 / 10000 = 13700 kobo)."""
     fee = bankers_round(6850000, Decimal("200") / Decimal("10000"))
     assert fee == 137000
 
@@ -49,7 +48,7 @@ def test_post_released_balanced_and_fee() -> None:
     assert_balanced(entries)
     fee_entry = next(e for e in entries if e.account == "fee_revenue")
     artisan_entry = next(e for e in entries if e.account == "artisan_payable:job-2")
-    # Fee = 685000 kobo × 200 / 10000 = 137000 kobo = ₦1,370
+    # Fee = 685000 kobo x 200 / 10000 = 137000 kobo = N1,370
     assert fee_entry.credit_kobo == 137000
     assert artisan_entry.credit_kobo == 6850000 - 137000
     # Debit side: client_liability pays full gross
@@ -70,9 +69,7 @@ def test_post_released_fee_plus_net_equals_gross() -> None:
         entries = post_released(f"job-inv-{gross_kobo}", gross_kobo, fee_bps)
         assert_balanced(entries)
         fee_entry = next(e for e in entries if e.account == "fee_revenue")
-        artisan_entry = next(
-            e for e in entries if e.account.startswith("artisan_payable:")
-        )
+        artisan_entry = next(e for e in entries if e.account.startswith("artisan_payable:"))
         assert fee_entry.credit_kobo + artisan_entry.credit_kobo == gross_kobo
 
 

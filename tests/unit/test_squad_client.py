@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 
-import httpx
 import pytest
 
 from app.core.config import Settings

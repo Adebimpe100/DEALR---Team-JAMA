@@ -10,7 +10,6 @@ from app.squad.webhooks import (
     verify_transfer_signature,
 )
 
-
 SECRET = "sandboxsecret"
 
 
