@@ -1,7 +1,7 @@
 # DEALR — Fair Pricing. Guaranteed Payment.
 ### Built by Team JAMA · Squad AI Hackathon 2026
 
-> *"Every job starts with a fair price. Every payment is guaranteed."*
+> *" Deals done right, every time."*
 
 ---
 
