@@ -851,7 +851,7 @@ function DashboardSection({ role, onNav }: { role: Role; onNav: (s: Section) => 
       <motion.div variants={itemFade} style={{ display: "flex", gap: 10, marginBottom: 28 }}>
         {isArtisan ? (
           <>
-            <BtnPrimary onClick={() => onNav("jobs")} style={{ width: "auto", padding: "11px 24px" }}>+ Create Job</BtnPrimary>
+            <BtnPrimary onClick={() => onNav("jobs")} style={{ width: "auto", padding: "11px 24px" }}>View Jobs</BtnPrimary>
             <BtnSecondary onClick={() => onNav("pricing")}>Price Advisor</BtnSecondary>
             <BtnSecondary onClick={() => onNav("bidding")}>Open Bids</BtnSecondary>
           </>
